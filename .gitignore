@@ -1,0 +1,4 @@
+node_modules/
+models/*.pkl
+__pycache__/
+.env
