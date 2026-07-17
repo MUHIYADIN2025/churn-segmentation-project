@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
@@ -6,6 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import pandas as pd
 import joblib
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+MODELS_DIR = ROOT_DIR / 'models'
 
 app = FastAPI(title="Telecom Customer Segmentation & Churn Predictive Engine", version="1.0.0")
 
@@ -19,12 +23,12 @@ app.add_middleware(
 
 # Soo rar dhammaan moodalladii la keydiyay
 try:
-    preprocessor = joblib.load("models/preprocessor.pkl")
-    cluster_scaler = joblib.load("models/cluster_scaler.pkl")
-    kmeans_model = joblib.load("models/kmeans_model.pkl")
+    preprocessor = joblib.load(MODELS_DIR / "preprocessor.pkl")
+    cluster_scaler = joblib.load(MODELS_DIR / "cluster_scaler.pkl")
+    kmeans_model = joblib.load(MODELS_DIR / "kmeans_model.pkl")
     models = {
-        "logistic_regression": joblib.load("models/logistic_regression.pkl"),
-        "random_forest": joblib.load("models/random_forest.pkl"),
+        "logistic_regression": joblib.load(MODELS_DIR / "logistic_regression.pkl"),
+        "random_forest": joblib.load(MODELS_DIR / "random_forest.pkl"),
     }
 except Exception as e:
     raise RuntimeError(f"Moodalladii halkan lagama helin: {str(e)}")

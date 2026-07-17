@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import joblib
@@ -6,9 +7,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DATASET_DIR = ROOT_DIR / 'dataset'
+MODELS_DIR = ROOT_DIR / 'models'
+
 
 def load_and_clean_data():
-    local_path = os.path.join('dataset', 'telcom_segmented_customers.csv')
+    local_path = DATASET_DIR / 'telcom_segmented_customers.csv'
 
     if os.path.exists(local_path):
         df = pd.read_csv(local_path)
@@ -64,7 +69,7 @@ def build_preprocessing_pipeline(df, target_col='Churn', test_size=0.2, random_s
     X_train_transformed = preprocessor.fit_transform(X_train)
     X_test_transformed = preprocessor.transform(X_test)
 
-    os.makedirs('models', exist_ok=True)
-    joblib.dump(preprocessor, 'models/preprocessor.pkl')
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    joblib.dump(preprocessor, MODELS_DIR / 'preprocessor.pkl')
 
     return X_train_transformed, X_test_transformed, y_train, y_test, preprocessor

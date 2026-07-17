@@ -1,6 +1,11 @@
+from pathlib import Path
 import joblib
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+MODELS_DIR = ROOT_DIR / 'models'
+
 
 def evaluate_and_compare():
     from train import execute_training_pipeline
@@ -26,12 +31,12 @@ def evaluate_and_compare():
     
     # Maadaama uu Logistic Regression leeyahay F1-Score-ka ugu sarreeya, isagaa guuleystay
     winner = models["logistic_regression"]
-    joblib.dump(winner, 'models/best_classifier.pkl')
+    joblib.dump(winner, MODELS_DIR / 'best_classifier.pkl')
     print("\nMoodalka Guuleystay: Logistic_Regression waxaa loo keydiyay models/best_classifier.pkl")
     
     # 3 Sanity Checks oo loo baahnaa
     print("\n" + "-"*15 + " SANITY CHECKS ON BEST MODEL " + "-"*15)
-    preprocessor = joblib.load('models/preprocessor.pkl')
+    preprocessor = joblib.load(MODELS_DIR / 'preprocessor.pkl')
     
     sanity_samples = pd.DataFrame([
         {"gender": "Male", "SeniorCitizen": 1, "Partner": "No", "Dependents": "No", "tenure": 2, 

@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 os.environ["OMP_NUM_THREADS"] = "1"
 import pandas as pd
 import joblib
@@ -6,6 +7,11 @@ from sklearn.cluster import KMeans
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from preprocess import load_and_clean_data, build_preprocessing_pipeline
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+MODELS_DIR = ROOT_DIR / 'models'
+MODELS_DIR.mkdir(parents=True, exist_ok=True)
+
 
 def execute_training_pipeline():
     df = load_and_clean_data()
@@ -20,8 +26,8 @@ def execute_training_pipeline():
     df['Segment_ID'] = kmeans_model.fit_predict(scaled_clus)
     
     # Keydi moodallada kooxaynta
-    joblib.dump(kmeans_model, 'models/kmeans_model.pkl')
-    joblib.dump(sc, 'models/cluster_scaler.pkl')
+    joblib.dump(kmeans_model, MODELS_DIR / 'kmeans_model.pkl')
+    joblib.dump(sc, MODELS_DIR / 'cluster_scaler.pkl')
     
     # 2. Supervised Learning Matrix Execution
     X_train, X_test, y_train, y_test, preprocessor = build_preprocessing_pipeline(df)
@@ -39,7 +45,7 @@ def execute_training_pipeline():
         print(f"Tababaraya moodalka rasmiga ah: {name}...")
         model.fit(X_train, y_train)
         trained_models[name] = model
-        joblib.dump(model, f'models/{name}.pkl')
+        joblib.dump(model, MODELS_DIR / f'{name}.pkl')
         
     return X_test, y_test, trained_models
 
